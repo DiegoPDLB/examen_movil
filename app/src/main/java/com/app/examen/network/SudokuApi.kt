@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface SudokuApi {
-    @GET("sudoku")
+    @GET("sudokugenerate")
     suspend fun getSudoku(
         @Query("width") width: Int,
         @Query("height") height: Int,

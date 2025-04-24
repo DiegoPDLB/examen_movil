@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import android.util.Log
 
 @HiltViewModel
 class SudokuViewModel @Inject constructor(
@@ -35,20 +36,35 @@ class SudokuViewModel @Inject constructor(
         }
     }
 
-    fun loadSudoku(width: Int = 9, height: Int = 9, difficulty: String = "easy") {
+    fun loadSudoku(difficulty: String = "easy") {
+        val safeDifficulty = difficulty.lowercase().trim()
+        val allowedDifficulties = listOf("easy", "medium", "hard")
+
+        val size = when (safeDifficulty) {
+            "easy" -> 4
+            "medium", "hard" -> 9
+            else -> 9 // fallback en caso de algo raro
+        }
+
+        if (safeDifficulty !in allowedDifficulties) {
+            _uiState.value = SudokuUiState.Error("Dificultad inválida: '$difficulty'. Usa: easy, medium o hard.")
+            return
+        }
+
         viewModelScope.launch {
             _uiState.value = SudokuUiState.Loading
+
+            Log.d("SUDOKU_API", "Intentando cargar puzzle con width=$size, height=$size, difficulty=$safeDifficulty")
+
             try {
-                val result = getSudokuUseCase(width, height, difficulty)
+                val result = getSudokuUseCase(size, size, safeDifficulty)
                 _uiState.value = SudokuUiState.Success(result.puzzle, result.solution)
 
-                // Guardar puzzle, solución e input inicial
                 dataStore.savePuzzle(result.puzzle)
                 dataStore.saveSolution(result.solution)
                 dataStore.saveInput(result.puzzle.map { row ->
                     row.map { it?.toString() ?: "" }
                 })
-
             } catch (e: Exception) {
                 _uiState.value = SudokuUiState.Error(
                     message = e.localizedMessage ?: "Error desconocido"
