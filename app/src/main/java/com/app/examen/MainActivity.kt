@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.app.examen.ui.navigation.AppNavGraph
 import com.app.examen.ui.theme.ExamenTheme
@@ -25,8 +24,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 AppNavGraph(
                     navController = navController,
-                    viewModel = viewModel,
-                    modifier = Modifier
+                    viewModel = viewModel
                 )
             }
         }
