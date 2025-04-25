@@ -1,11 +1,11 @@
 package com.app.examen.domain.usecase
 
 import com.app.examen.data.model.SudokuDto
-import com.app.examen.data.repository.SudokuRepository
+import com.app.examen.data.repository.SudokuRepositoryImpl
 import javax.inject.Inject
 
 class GetSudokuUseCase @Inject constructor(
-    private val repository: SudokuRepository
+    private val repository: SudokuRepositoryImpl
 ) {
     suspend operator fun invoke(
         width: Int = 9,

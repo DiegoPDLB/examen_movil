@@ -1,4 +1,4 @@
-package com.app.examen.ui.screens.home
+package com.app.examen.ui.screens.puzzle
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -12,21 +12,33 @@ import com.app.examen.viewmodel.state.SudokuUiState
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(viewModel: SudokuViewModel) {
+fun PuzzleScreen(viewModel: SudokuViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         when (val state = uiState) {
             is SudokuUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }
 
             is SudokuUiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text("Error: ${state.message}")
                 }
             }
@@ -39,7 +51,7 @@ fun HomeScreen(viewModel: SudokuViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding)
+                        .padding(paddingValues)
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -63,14 +75,12 @@ fun HomeScreen(viewModel: SudokuViewModel) {
                             }.all { it }
 
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar(
-                                    if (isCorrect) "Sudoku completado correctamente"
-                                    else "Hay errores en el Sudoku"
-                                )
-                            }
-
-                            if (isCorrect) {
-                                viewModel.saveInput(userInput)
+                                if (isCorrect) {
+                                    viewModel.saveInput(userInput)
+                                    snackbarHostState.showSnackbar("🎉 Sudoku completado correctamente")
+                                } else {
+                                    snackbarHostState.showSnackbar("❌ Hay errores en el Sudoku")
+                                }
                             }
                         }) {
                             Text("Verificar")

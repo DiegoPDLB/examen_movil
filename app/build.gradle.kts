@@ -1,12 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android") version "2.48"
+    id("org.jetbrains.kotlin.plugin.compose")
+    kotlin("kapt")
 }
 
 android {
     namespace = "com.app.examen"
     compileSdk = 35
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.11"
+    }
 
     defaultConfig {
         applicationId = "com.app.examen"
@@ -58,5 +64,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
 }
